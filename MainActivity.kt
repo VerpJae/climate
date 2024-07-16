@@ -4,9 +4,18 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.Color.parseColor
 import android.os.Bundle
+import android.widget.Button
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.graphics.drawable.toDrawable
+import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Date
+import java.util.Locale
+import kotlin.random.Random
 
 class MainActivity : AppCompatActivity() {
 
@@ -21,9 +30,17 @@ class MainActivity : AppCompatActivity() {
             activity_main.xml에 텍스트 뷰와 버튼이 만들어졌으면
                 onCreate에서 텍스트뷰를 불러와서 텍스트 설정 -> arr중 하나 랜덤으로 뽑아서 설정
                             버튼을 불러와서 클릭시 -> 그냥 클릭 이벤트만 구현
-     */ override fun onCreate(savedInstanceState: Bundle?) {
-            super.onCreate(savedInstanceState)
-            setContentView(R.layout.activity_main)
+     */
+    fun getElementBySeed(array: Array<String>, legendSeed: Long): String {
+        val random = Random(legendSeed)
+        val randomIndex = random.nextInt(array.size)
+        return array[randomIndex]
+    }
+
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
 
         /*
           TODO:
@@ -34,6 +51,7 @@ class MainActivity : AppCompatActivity() {
                for문으로 arr에 다 추가해주기 바람
          */
         val arr = arrayOf<String>()
+
         arr.plus("오늘 날씨 체크하기")
         arr.plus("대중교통 이용하기")
         arr.plus("재활용 쓰레기로 작품 만들기")
@@ -51,22 +69,29 @@ class MainActivity : AppCompatActivity() {
         arr.plus("화학 물질 없는 천연 청소 용품 사용하기")
         arr.plus("재생 용지로 업무 및 과제 처리하기")
 
+        arr.plus("쓰레기 재활용 1개 이상 하기")
 
-
-
-
-
-
-        for(i in 1..10){ //example
-
-            arr.plus("쓰레기 ${5}개 줍기")
-            arr.plus("일회용품 ${10}개 이하 사용하기")
-            arr.plus("쓰레기 재활용 ${3}개 이상 하기")
-            arr.plus("고기 없는 음식 ${1}개 이상 만들기")
-            arr.plus("식물 ${5}개 심기")
-            arr.plus(" ${5}개 줍기")
-
+        for (i in 1..10) {
+            arr.plus("일회용품 ${i}개 이하 사용하기")
         }
+
+        for (i in 1..5) {
+            arr.plus("쓰레기 ${i}개 줍기")
+            arr.plus("식물 ${i}개 심기")
+            arr.plus("동물성 음식 ${i}개 이하 소비하기")
+        }
+
+        val mission = findViewById<TextView>(R.id.mission)
+        val button = findViewById<Button>(R.id.button)
+
+        val now = Date()
+        val today = SimpleDateFormat("yyyyMMdd", Locale.getDefault()).format(now).toLong()
+        mission.text = getElementBySeed(arr, today)
+
+        button.setOnClickListener {
+            mission.background = parseColor("#84EF84").toDrawable()
+        }
+
         // 알람 설정
         setDailyAlarm(this)
     }
